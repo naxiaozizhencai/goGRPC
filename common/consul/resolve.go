@@ -32,14 +32,6 @@ func Init() {
 type consulBuilder struct {
 }
 
-type consulResolver struct {
-	address              string
-	wg                   sync.WaitGroup
-	cc                   resolver.ClientConn
-	name                 string
-	disableServiceConfig bool
-	lastIndex            uint64
-}
 
 func NewBuilder() resolver.Builder {
 	return &consulBuilder{}
@@ -68,6 +60,19 @@ func (cb *consulBuilder) Build(target resolver.Target, cc resolver.ClientConn,
 
 }
 
+func (cb *consulBuilder) Scheme() string {
+	return "consul"
+}
+
+type consulResolver struct {
+	address              string
+	wg                   sync.WaitGroup
+	cc                   resolver.ClientConn
+	name                 string
+	disableServiceConfig bool
+	lastIndex            uint64
+}
+
 func (cr *consulResolver) watcher() {
 	log.Printf("calling consul watcher")
 	config := api.DefaultConfig()
@@ -79,12 +84,6 @@ func (cr *consulResolver) watcher() {
 	}
 
 	log.Printf("resolver connect to consul:%v,%v,%v", cr.address, cr.name, cr.lastIndex)
-
-	_, _, err = client.Health().ServiceMultipleTags(cr.name, []string{"hello"},
-		true, &api.QueryOptions{WaitIndex: cr.lastIndex})
-	if err != nil {
-		log.Printf("error retrieving instances from Consul: %v", err)
-	}
 
 	for {
 		services, metainfo, err := client.Health().ServiceMultipleTags(cr.name, []string{"hello"},
@@ -100,14 +99,9 @@ func (cr *consulResolver) watcher() {
 			newAddrs = append(newAddrs, resolver.Address{Addr: addr})
 		}
 		log.Printf("adding service addrs:%v", newAddrs)
-		cr.cc.NewAddress(newAddrs)
-		cr.cc.NewServiceConfig(cr.name)
+		cr.cc.UpdateState(resolver.State{Addresses:newAddrs, ServiceConfig:cr.name})
 	}
 
-}
-
-func (cb *consulBuilder) Scheme() string {
-	return "consul"
 }
 
 func (cr *consulResolver) ResolveNow(opt resolver.ResolveNowOption) {

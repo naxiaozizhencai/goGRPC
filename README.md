@@ -10,3 +10,15 @@
 ### 1. build proto file
 
 > protoc -I proto/ proto/hello.proto --go_out=plugins=grpc:pb
+
+### 2. dev模式运行consul
+
+> consul agent -dev
+
+### 3. 运行server
+
+> make run_server
+
+### 4. 运行client
+
+> make run_client
