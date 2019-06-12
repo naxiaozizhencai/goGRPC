@@ -25,6 +25,9 @@ func TestHelloService(t *testing.T) {
 		Name: "Tom Clay",
 	}
 	resp, err := client.SayHello(ctx, &req)
-	util.PanicIfError("fail to call sayHello", err)
+	if err != nil {
+		log.Printf("fail to get data from server:%v", err)
+		return
+	}
 	log.Printf("resp:%v", resp.Reply)
 }

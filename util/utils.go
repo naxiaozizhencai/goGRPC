@@ -2,9 +2,20 @@ package util
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
+	"io/ioutil"
+	"runtime/debug"
 )
+
+func HandlePanic(fn func()) {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Printf("there is a panic in goroutine:\n%v", string(debug.Stack()))
+		}
+	}()
+
+	fn()
+}
 
 func PanicIfError(msg string, err error) {
 	if err != nil {
