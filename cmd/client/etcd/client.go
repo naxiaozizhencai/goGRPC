@@ -3,25 +3,26 @@ package main
 import (
 	"context"
 	"fmt"
-	"goGRPC/common/consul"
-	"goGRPC/pb"
-	"goGRPC/util"
+	"github/leel0330/grpcdemo/common/lb/etcd"
+	"github/leel0330/grpcdemo/pb"
+	"github/leel0330/grpcdemo/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/balancer/roundrobin"
+	"google.golang.org/grpc/resolver"
 	"log"
 	"time"
 )
 
-
 func main() {
-	consul.Init()
 
-	// localIP := util.LocalIP()
-	localIP := "127.0.0.1"
+	srvName, version := "greeting", "v1"
 
-	target := fmt.Sprintf("%v://%v:%v/%v", "consul", localIP, 8500, "helloService")
+	r := etcd.NewEtcdResolver([]string{"127.0.0.1:2379"}, srvName, version, int64(10))
+	resolver.Register(r)
 
-	ctx, _ := context.WithTimeout(context.Background(), 2 * time.Second)
+	target := fmt.Sprintf("%s:///%s", r.Scheme(), srvName)
+
+	ctx, _ := context.WithTimeout(context.Background(), 2*time.Second)
 	conn, err := grpc.DialContext(ctx, target,
 		grpc.WithBlock(),
 		grpc.WithInsecure(),

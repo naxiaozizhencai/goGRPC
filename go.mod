@@ -1,13 +1,15 @@
-module goGRPC
+module github/leel0330/grpcdemo
 
 go 1.12
 
 require (
 	cloud.google.com/go v0.39.0 // indirect
+	github.com/DavadDi/grpclb v0.0.0-20180907032526-530387db8022
 	github.com/OneOfOne/xxhash v1.2.5 // indirect
 	github.com/armon/circbuf v0.0.0-20190214190532-5111143e8da2 // indirect
 	github.com/armon/go-metrics v0.0.0-20190430140413-ec5e00d3c878 // indirect
 	github.com/armon/go-radix v1.0.0 // indirect
+	github.com/coreos/etcd v3.3.13+incompatible
 	github.com/dgryski/go-sip13 v0.0.0-20190329191031-25c5027a8c7b // indirect
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/golang/mock v1.3.1 // indirect
@@ -37,6 +39,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
+	go.etcd.io/etcd v3.3.13+incompatible
 	go.opencensus.io v0.22.0 // indirect
 	golang.org/x/crypto v0.0.0-20190530122614-20be4c3c3ed5 // indirect
 	golang.org/x/exp v0.0.0-20190510132918-efd6b22b2522 // indirect
